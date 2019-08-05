@@ -1,0 +1,29 @@
+{
+  "name": "indoor-drone-thesis",
+  "version": "1.0.0",
+  "description": "thesis work",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf node_modules/",
+    "reinstall": "npm run clean && npm install",
+    "rebuild": "npm run clean && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ostap95/IndoorDrone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ostap95/IndoorDrone/issues"
+  },
+  "homepage": "https://github.com/Ostap95/IndoorDrone#readme",
+  "dependencies": {
+    "ar-drone": "^0.3.3",
+    "body-parser": "^1.19.0",
+    "dronestream": "^1.1.1",
+    "express": "^4.17.1",
+    "redis": "^2.8.0"
+  }
+}
