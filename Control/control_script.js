@@ -1,14 +1,14 @@
-var arDrone = require('ar-drone');
-var readline = require('readline');
+let arDrone = require('ar-drone');
+let readline = require('readline');
 
 /* Global variables */
-var drone = arDrone.createClient();
+let drone = arDrone.createClient();
 
 const states = {
   FLYING: 3,
   ON_GROUND: 4
 };
-var droneState = states.ON_GROUND;
+let droneState = states.ON_GROUND;
 /* End global variables */
 
 readline.emitKeypressEvents(process.stdin);
@@ -19,6 +19,7 @@ process.stdin.on('keypress', (str, key) => {
   if (key.ctrl && key.name === 'c') {
     process.exit();
   } else {
+    // TODO check if successfully connected to the drone.
     runDroneCommand(key);
   }
 });
@@ -44,41 +45,49 @@ console.log(initialMessage);
 async function runDroneCommand(key) {
   switch (key.name) {
     case 'up':
+      console.log('Moving forward...');
       drone.front(1);
       await sleep(500);
       drone.front(0);
       break;
     case 'down':
+      console.log('Moving backwards...');
       drone.back(1);
       await sleep(500);
       drone.back(0);
       break;
     case 'left':
+      console.log('Moving to the left...');
       drone.left(1);
       await sleep(500);
       drone.left(0);
       break;
     case 'right':
+      console.log('Moving to the right...');
       drone.right(1);
       await sleep(500);
       drone.right(0);
       break;
     case 'a':
+      console.log('Rotating counterclockwise...');
       drone.counterClockwise(1);
       await sleep(500);
       drone.counterClockwise(0);
       break;
     case 'w':
+      console.log('Moving up...');
       drone.up(1);
       await sleep(500);
       drone.up(0);
       break;
     case 'd':
+      console.log('Rotating clockwise...');
       drone.clockwise(1);
       await sleep(500);
       drone.clockwise(0);
       break;
     case 's':
+      console.log('Moving down...');
       drone.down(1);
       await sleep(500);
       drone.down(0);
