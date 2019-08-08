@@ -35,7 +35,7 @@ const initialMessage =
   '    ← : left arrow moves the drone in the left direction.\n' +
   '    → : right arrow moves the drone in the right direction.\n' +
   ' space: space key serves as a takeoff command when the drone is on the ground, and land command when the drone is in the air.\n' +
-  '\n\nPress space for the drone to takeoff.';
+  '\n\nPress space for the drone to takeoff.\n';
 console.log(initialMessage);
 
 /**
