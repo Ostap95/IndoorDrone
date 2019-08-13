@@ -1,15 +1,6 @@
-let arDrone = require('ar-drone');
-let readline = require('readline');
-
-/* Global variables */
-let drone = arDrone.createClient();
-
-const states = {
-  FLYING: 3,
-  ON_GROUND: 4
-};
-let droneState = states.ON_GROUND;
-/* End global variables */
+const readline = require('readline');
+const Drone = require('../lib/drone.js');
+const drone = new Drone();
 
 readline.emitKeypressEvents(process.stdin);
 process.stdin.setRawMode(true);
@@ -19,7 +10,6 @@ process.stdin.on('keypress', (str, key) => {
   if (key.ctrl && key.name === 'c') {
     process.exit();
   } else {
-    // TODO check if successfully connected to the drone.
     runDroneCommand(key);
   }
 });
@@ -36,83 +26,55 @@ const initialMessage =
   '    → : right arrow moves the drone in the right direction.\n' +
   ' space: space key serves as a takeoff command when the drone is on the ground, and land command when the drone is in the air.\n' +
   '\n\nPress space for the drone to takeoff.\n';
+
 console.log(initialMessage);
 
 /**
  * Sends commands to the drone based on the typed key.
  * @param {object} key - key object from the stdin keypress stream.
  */
-async function runDroneCommand(key) {
+function runDroneCommand(key) {
   switch (key.name) {
     case 'up':
       console.log('Moving forward...');
-      drone.front(1);
-      await sleep(500);
-      drone.front(0);
+      drone.front();
       break;
     case 'down':
       console.log('Moving backwards...');
-      drone.back(1);
-      await sleep(500);
-      drone.back(0);
+      drone.back();
       break;
     case 'left':
       console.log('Moving to the left...');
-      drone.left(1);
-      await sleep(500);
-      drone.left(0);
+      drone.left();
       break;
     case 'right':
       console.log('Moving to the right...');
-      drone.right(1);
-      await sleep(500);
-      drone.right(0);
+      drone.right();
       break;
     case 'a':
       console.log('Rotating counterclockwise...');
-      drone.counterClockwise(1);
-      await sleep(500);
-      drone.counterClockwise(0);
+      drone.counterClockwise();
       break;
     case 'w':
       console.log('Moving up...');
-      drone.up(1);
-      await sleep(500);
-      drone.up(0);
+      drone.up();
       break;
     case 'd':
       console.log('Rotating clockwise...');
-      drone.clockwise(1);
-      await sleep(500);
-      drone.clockwise(0);
+      drone.clockwise();
       break;
     case 's':
       console.log('Moving down...');
-      drone.down(1);
-      await sleep(500);
-      drone.down(0);
+      drone.down();
       break;
     case 'space':
-      if (droneState === states.ON_GROUND) {
+      if (drone.state() === drone.states().ON_GROUND) {
         console.log('Taking off...');
         drone.takeoff();
-        droneState = states.FLYING;
-      } else if (droneState === states.FLYING) {
+      } else if (drone.state() === drone.states().FLYING) {
         console.log('Landing...');
         drone.land();
-        droneState = states.ON_GROUND;
       }
       break;
   }
-}
-
-/**
- * Responsible for returning after a certain amount of time.
- * @param {number} ms - the amout of time(milliseconds) after which to return.
- * @return {object} Returns a Promise
- * @example 
- *  sleep(5000)
- */
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
 }
