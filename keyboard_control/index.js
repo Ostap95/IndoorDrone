@@ -1,6 +1,8 @@
 const readline = require('readline');
 const Drone = require('../lib/drone.js');
+
 const drone = new Drone();
+drone.connect();
 
 readline.emitKeypressEvents(process.stdin);
 process.stdin.setRawMode(true);
