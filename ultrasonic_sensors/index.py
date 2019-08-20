@@ -1,38 +1,20 @@
 #!/usr/bin/python
 import RPi.GPIO as GPIO
-import time
+from gpiozero import DistanceSensor
+from time import sleep
 
-try:
-    GPIO.setmode(GPIO.BOARD)
+sensor_front = DistanceSensor(echo=7, trigger=11)
+sensor_back = DistanceSensor(echo=13, trigger=15)
+sensor_left = DistanceSensor(echo=16, trigger=18)
+sensor_right = DistanceSensor(echo=29, trigger=31)
+sensor_top = DistanceSensor(echo=33, trigger=35)
 
-    PIN_TRIGGER = 7
-    PIN_ECHO = 11
+while True:
+    print("Front distance: ", sensor_front.distance * 100)
+    print("Back distance: ", sensor_back.distance * 100)
+    print("Left distance: ", sensor_left.distance * 100)
+    print("Right distance: ", sensor_right.distance * 100)
+    print("Top distance: ", sensor_top.distance * 100)
+    sleep(1)
 
-    GPIO.setup(PIN_TRIGGER, GPIO.OUT)
-    GPIO.setup(PIN_ECHO, GPIO.IN)
-
-    GPIO.output(PIN_TRIGGER, GPIO.LOW)
-    print "Waiting for sensor to settle"
-    time.sleep(2) # sleep for 2 seconds
-
-    print "Calculating distance"
-    while True:
-        GPIO.output(PIN_TRIGGER, GPIO.HIGH)
-
-        time.sleep(0.00001) # sleep for 1 nanosecond. the sensor requires a pulse of 1 nanosecond to trigger it
-
-        GPIO.output(PIN_TRIGGER, GPIO.LOW)
-
-        while GPIO.input(PIN_ECHO) == 0:
-            pulse_start_time = time.time()
-        while GPIO.input(PIN_ECHO) == 1:
-            pulse_end_time = time.time()
-
-        pulse_duration = pulse_end_time - pulse_start_time
-        distance = round(pulse_duration * 17150, 2)
-
-        print "Distance: ", distance, " cm"
-        time.sleep(0.5)
-finally:
-    GPIO.cleanup()
 
