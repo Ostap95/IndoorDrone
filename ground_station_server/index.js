@@ -1,8 +1,10 @@
 const Drone = require('../lib/drone');
 const express = require('express');
 const readline = require('readline');
+const bodyParser = require('body-parser');
 
 const SERVER_PORT = 3000;
+const SERVER_ADDRESS = '192.168.1.7';
 const app = express();
 const drone = new Drone();
 
@@ -28,20 +30,13 @@ let droneState = {
   altitudeMeters: 0,
   velocity: { x: 0, y: 0, z: 0 }
 }
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 drone.connect();
 drone.client().on('navdata', data => { // In average every 65ms [when connected directly to the drone]
-  droneState.flying = data.droneState.flying;
-  droneState.motorProblem = data.droneState.motorProblem;
-  droneState.softwareFault = data.droneState.softwareFault;
-  droneState.lowBattery = data.droneState.lowBattery;
-  droneState.magnometerNeedsCalibration = data.droneState.MagnometerNeedsCalibration;
-  droneState.tooMuchWind = data.droneState.tooMuchWind;
-  droneState.emergencyLanding = data.droneState.emergencyLanding;
-
-  droneState.controlState = data.demo ? data.demo.controlState : '';
-  droneState.flyState = data.demo ? data.demo.flyState : '';
-  droneState.altitudeMeters = data.demo ? data.demo.altitudeMeters : 0;
-  droneState.velocity = data.demo ? data.demo.velocity : {x:0, y:0, z:0};
+  handleNavData(data);
 });
 
 drone.client().on('error', error => {
@@ -51,7 +46,8 @@ drone.client().on('error', error => {
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.post('/sensor_data', (req, res) => {
-
+  console.log(req.body);
+  res.sendStatus(200);
 });
 
 readline.emitKeypressEvents(process.stdin);
@@ -131,5 +127,32 @@ function runDroneCommand(key) {
   }
 }
 
-app.listen(SERVER_PORT, () => console.log(`Ground station server is listening on port ${SERVER_PORT}!\n`));
+function handleNavData(data) {
+  droneState.flying = data.droneState.flying;
+  droneState.motorProblem = data.droneState.motorProblem;
+  droneState.softwareFault = data.droneState.softwareFault;
+  droneState.lowBattery = data.droneState.lowBattery;
+  droneState.magnometerNeedsCalibration = data.droneState.MagnometerNeedsCalibration;
+  droneState.tooMuchWind = data.droneState.tooMuchWind;
+  droneState.emergencyLanding = data.droneState.emergencyLanding;
+
+  droneState.controlState = data.demo ? data.demo.controlState : '';
+  droneState.flyState = data.demo ? data.demo.flyState : '';
+  droneState.altitudeMeters = data.demo ? data.demo.altitudeMeters : 0;
+  droneState.velocity = data.demo ? data.demo.velocity : {x:0, y:0, z:0};
+
+  handleNavDataWarnings();
+}
+
+function handleNavDataWarnings() {
+  if (droneState.motorProblem) console.log('Motor problem!!!');
+  if (droneState.softwareFault) console.log('Software fault!!!');
+  if (droneState.lowBattery) console.log('Low battery!!!');
+  if (droneState.magnometerNeedsCalibration) console.log('Magnetometer needs callibration!!!');
+  if (droneState.tooMuchWind) console.log('Too much wind!!!');
+  if (droneState.emergencyLanding) console.log('Emergency landing!!!');
+}
+
+
+app.listen(SERVER_PORT, SERVER_ADDRESS, () => console.log(`Ground station server is listening on port ${SERVER_PORT}!\n`));
 
