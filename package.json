@@ -21,6 +21,7 @@
   "homepage": "https://github.com/Ostap95/IndoorDrone#readme",
   "dependencies": {
     "ar-drone": "^0.3.3",
+    "body-parser": "^1.19.0",
     "dronestream": "^1.1.1",
     "express": "^4.17.1",
     "redis": "^2.8.0"
