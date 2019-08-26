@@ -43,11 +43,10 @@ drone.client().on('error', error => {
   console.log(`Error!!! ${error}`)
 });
 
-app.get('/', (req, res) => res.send('Hello World!'));
-
 app.post('/sensor_data', (req, res) => {
   console.log(req.body);
   res.sendStatus(200);
+  drone.updateSensorData(req.body);
 });
 
 readline.emitKeypressEvents(process.stdin);
