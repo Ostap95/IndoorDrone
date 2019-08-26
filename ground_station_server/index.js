@@ -52,9 +52,11 @@ process.stdin.on('keypress', (str, key) => {
   }
 });
 
-var obstacleSensing = setInterval(() => {
-  drone.checkForObstacles();
-}, 100); // executes every 0.1 second
+if (drone.constructor.name === "ObstacleAvoidingDrone") {
+  setInterval(() => {
+    drone.checkForObstacles();
+  }, 100); // executes every 0.1 second
+}
 
 
 
