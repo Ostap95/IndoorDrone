@@ -8,15 +8,6 @@ const SERVER_ADDRESS = '192.168.1.7';
 const app = express();
 const drone = new Drone();
 
-var droneSensorsStatus = {
-  front: null,
-  back: null,
-  left: null,
-  right: null,
-  top: null,
-  bottom: null
-}
-
 let droneState = {
   flying: 0,
   motorProblem: 0,
@@ -60,6 +51,12 @@ process.stdin.on('keypress', (str, key) => {
     runDroneCommand(key);
   }
 });
+
+var obstacleSensing = setInterval(() => {
+  drone.checkForObstacles();
+}, 100); // executes every 0.1 second
+
+
 
 const initialMessage =
   '\n\nAvailable commands:\n\n' + 

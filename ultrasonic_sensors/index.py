@@ -20,10 +20,10 @@ while True:
     # print("Top distance: ", sensor_top.distance)
 
     sensor_data = {
-        'front':sensor_front.distance,
-        'back':sensor_back.distance,
-        'left':sensor_left.distance,
-        'right':sensor_right.distance,
-        'top':sensor_top.distance
+        'front':round(sensor_front.distance * 100, 2),
+        'back':round(sensor_back.distance * 100, 2),
+        'left':round(sensor_left.distance * 100, 2),
+        'right':round(sensor_right.distance * 100, 2),
+        'top':round(sensor_top.distance * 100, 2)
     }
     requests.post(SERVER_ENDPOINT, headers = {u'content-type': u'application/json'}, data = json.dumps(sensor_data))
